@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    # create gitlab node
+  config.vm.define :gitlab do |gitlab|
+    gitlab.vm.box = "centos/7"    
+    gitlab.vm.hostname = "vg-gitlabce"        
+    gitlab.vm.box_check_update = true # disable automatic box update checking
+    config.vm.network :private_network, ip: "192.168.16.18"
+    
+    gitlab.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.cpus = 2  
+    end
+
+    gitlab.vm.provision :shell, path: "provisioning/bootstrap-gitlab.sh"
+  end
+end
