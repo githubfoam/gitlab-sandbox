@@ -1,12 +1,57 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+Vagrant.require_version ">= 1.6.0"
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+ # Disable updates
+ config.vm.box_check_update = true
+
+ servers_list.each do |server|
+   config.vm.define server["vagrant_box_host"] do |box|
+     box.vm.box = server["vagrant_box"]
+     box.vm.hostname = server["vagrant_box_host"]
+     box.vm.network server["network_type"], ip: server["vagrant_box_ip"]
+     box.vm.network "forwarded_port", guest: server["guest_port"], host: server["host_port"]
+     box.vm.provider "virtualbox" do |vb|
+         vb.name = server["vbox_name"]
+         vb.memory = server["vbox_ram"]
+         vb.cpus = server["vbox_cpu"]
+         vb.gui = false
+         vb.customize ["modifyvm", :id, "--groups", "/zeek-sandbox"] # create vbox group
+     end # end of box.vm.providers
+
+     box.vm.provision "ansible_local" do |ansible|
+         # ansible.compatibility_mode = "2.0"
+         ansible.compatibility_mode = server["ansible_compatibility_mode"]
+         # ansible.version = server["ansible_version"]
+         ansible.playbook = server["server_bootstrap"]
+         # ansible.inventory_path = 'provisioning/hosts'
+         # ansible.verbose = "vvvv" # debug
+      end # end if box.vm.provision
+      box.vm.provision "shell", inline: <<-SHELL
+       echo "===================================================================================="
+                                 hostnamectl status
+       echo "===================================================================================="
+       echo "         \   ^__^                                                                  "
+       echo "          \  (oo)\_______                                                          "
+       echo "             (__)\       )\/\                                                      "
+       echo "                 ||----w |                                                         "
+       echo "                 ||     ||                                                         "
+       SHELL
+
+   end # end of config.vm
+ end  # end of servers_list.each loop
+end # end of Vagrant.configure
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box_check_update = true
 
-    # create gitlab node
+  # create gitlab node
   config.vm.define :gitlab do |gitlab|
     gitlab.vm.box = "centos/7"    
     gitlab.vm.hostname = "vg-gitlabce"        
@@ -14,6 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :private_network, ip: "192.168.16.18"
     
     gitlab.vm.provider "virtualbox" do |vb|
+      vb.name = "vb-gitlabce"
       vb.memory = 4096
       vb.cpus = 2  
     end

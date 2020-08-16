@@ -24,9 +24,9 @@ vagrant plugin install vagrant-mutate #Convert vagrant boxes to work with differ
 
 # https://app.vagrantup.com/centos/boxes/7
 vagrant box add "centos/7" --provider=libvirt
-vagrant init --template Vagrantfile.provision.bash.erb 
+vagrant init --template Vagrantfile.template.erb
 # must be created in project root directory with Vagrantfile template file
-vagrant up --provider=libvirt "vg-gitlabce" 
+vagrant up --provider=libvirt "vg-compute-13" 
 
 # https://github.com/chef/bento/tree/master/packer_templates/ubuntu
 # vagrant box add "bento/ubuntu-19.10" --provider=virtualbox

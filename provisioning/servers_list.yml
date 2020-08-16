@@ -172,7 +172,7 @@
   ansible_compatibility_mode: "2.0"    
 
 - vagrant_box_host: "vg-compute-13"
-  vagrant_box: "centos/8"
+  vagrant_box: "centos/7"
   vbox_name: "vbox-compute-13"
   vbox_ram: 4096
   vbox_cpu: 2
@@ -181,7 +181,7 @@
   guest_port: 1235
   host_port: 1235
   server_bootstrap: "provisioning/deploy.yml"
-  shell_provision: "provisioning/bootstrap.sh"
+  shell_provision: "provisioning/bootstrap_gitlabce.sh"
   # ansible_version: "2.9.2"
   ansible_compatibility_mode: "2.0"      
 ############# compliance as code #######################
