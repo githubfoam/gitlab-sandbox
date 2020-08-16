@@ -24,7 +24,6 @@ vagrant plugin install vagrant-mutate #Convert vagrant boxes to work with differ
 
 # https://app.vagrantup.com/centos/boxes/7
 vagrant box add "centos/7" --provider=libvirt
-vagrant up --provider=libvirt "vg-compute-09"
 vagrant init --template Vagrantfile.provision.bash.erb 
 # must be created in project root directory with Vagrantfile template file
 vagrant up --provider=libvirt "vg-gitlabce" 
