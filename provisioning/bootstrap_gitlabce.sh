@@ -12,9 +12,14 @@ yum install -y curl policycoreutils-python openssh-server openssh-clients
 systemctl enable sshd
 systemctl start sshd
 
+systemctl enable firewalld #Enable Firewalld
+systemctl start firewalld #Start Firewalld
+systemctl status firewalld #Check the Status of Firewalld
+
 firewall-cmd --permanent --add-service=http
 firewall-cmd --permanent --add-service=https
 systemctl reload firewalld
+systemctl status firewalld #Check the Status of Firewalld
 
 # Install Postfix to send notification emails
 yum install -y postfix
