@@ -32,5 +32,5 @@ curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 # Install the GitLab 
 # Change https://gitlab.example.com to the URL at which you want to access your GitLab instance
 # EXTERNAL_URL="https://192.168.20.21" 
-yum install -y gitlab-ce
-curl https://192.168.20.21
+# yum install -y gitlab-ce
+# curl https://192.168.20.21
