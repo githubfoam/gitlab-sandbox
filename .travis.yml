@@ -27,7 +27,46 @@ matrix:
         - sudo vagrant destroy -f # required to run Vagrantfile template        
         - sudo rm Vagrantfile # required to run Vagrantfile template                
         
+#====================Gitlab-runner ========================================================
 
+    # https://github.com/liatrio/demo-deployment-pipeline.git
+    - name: "Gitlab-runner  on bionic"
+      dist: bionic
+      services:
+        - docker
+      addons:
+        snaps:
+          - name: microk8s
+            confinement: classic # or devmode
+            channel: latest/stable # will be passed to --channel flag
+      language: ruby
+      # python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - pip install -r requirements.txt        
+      script:
+        - git clone https://github.com/rjgallac/gitlab-runners-demo-app.git && cd gitlab-runners-demo-app
+        - |
+          docker run --detach
+          --hostname gitlab.example.com
+          --publish 443:443 --publish 80:80 --publish 22:22
+          --name gitlab
+          --restart always
+          --volume /srv/gitlab/config:/etc/gitlab
+          --volume /srv/gitlab/logs:/var/log/gitlab
+          --volume /srv/gitlab/data:/var/opt/gitlab
+          gitlab/gitlab-ce:latest
+        - sudo apt-get install -yyq gitlab-runner
+        - gitlab-runner register 
+        #add gitlb.example.com to hosts file        
+        # add this to your toml if you want docker to find your gitlab. 
+        # replace with your IP address.
+        # extra_hosts = ["gitlab.example.com:192.168.1.10"]ö
+      after_success:
+        - deactivat
+        
     # TESTED OK
     # - name: "deploy jenkins ubuntu"
     #   dist: bionic
